@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Encrypting Camera</string>
+    <string name="hello_world">Bonjour, Monde!</string>
+    <string name="action_settings">Configuration</string>
+    <string name="btn_liveFeedText">Feed Live</string>
+    <string name="title_activity_fullscreen_camera">CameraQuiPRendTousLecran</string>
+    <string name="dummy_button">Button Dummy</string>
+    <string name="dummy_content">Content qui na pas de content</string>
+    <string name="noCameraLabelText">Vous n\'avons pas un camera!</string>
+    <string name="title_activity_no_camera">PasDeCameraActivite</string>
+
+</resources>

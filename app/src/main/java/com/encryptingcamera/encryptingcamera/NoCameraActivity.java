@@ -1,34 +1,25 @@
 package com.encryptingcamera.encryptingcamera;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 
-public class SetupMainActivity extends Activity {
-
-
-    private Button btbLiveFeed;
+public class NoCameraActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setup_main);
-
-        btbLiveFeed = (Button)findViewById(R.id.btn_liveFeed);
-
+        setContentView(R.layout.activity_no_camera);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_setup_main, menu);
+        getMenuInflater().inflate(R.menu.menu_no_camera, menu);
         return true;
     }
 
@@ -47,20 +38,7 @@ public class SetupMainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onClickLiveFeedBtn(View view) {
-        android.util.Log.i("blah",  "Test");
-        Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
+    public void blahFunc(View view) {
 
-        /*
-         * Change activities through an intent.
-         */
-        Intent changeActivitiesIntent = new Intent(this, FullscreenCameraActivity.class);
-
-        // If you need a bundle to pass stuff through an intent
-        //Bundle bundle = new Bundle();
-
-        // Start the activity
-        startActivity(changeActivitiesIntent);
-
-    }// end onClick
+    }
 }
