@@ -4,10 +4,8 @@ package CameraCode; /**
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.util.Log;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -16,14 +14,19 @@ import java.io.IOException;
 /** A basic Camera preview class */
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
-    private static final String DEBUG_CAMERA_PREVIEW = "Camera Preview";
+    private static final String DEBUG_CAMERA_PREVIEW = "Camera";
 
     private SurfaceHolder mHolder;
-    private Camera mCamera;
+    private Context mainContext;
 
-    public CameraPreview(Context context, Camera camera) {
+    private Camera mCamera;
+    private int cameraId;
+
+    public CameraPreview(Context context, Camera camera, int cameraId) {
         super(context);
         mCamera = camera;
+        mainContext = context;
+        this.cameraId = cameraId;
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -35,18 +38,19 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
-        Camera.Parameters p = mCamera.getParameters();
+        //Camera.Parameters p = mCamera.getParameters();
         //p.setPictureSize(IMAGE_WIDTH, IMAGE_HEIGHT);
 
-        mCamera.getParameters().setRotation(90);
+        //mCamera.getParameters().setRotation(90);
 
-        Camera.Size s = p.getSupportedPreviewSizes().get(0);
-        p.setPreviewSize( s.width, s.height );
+        //Camera.Size s = p.getSupportedPreviewSizes().get(0);
+        //p.setPreviewSize( s.width, s.height );
 
-        p.setPictureFormat(PixelFormat.JPEG);
-        p.set("flash-mode", "auto");
-        mCamera.setDisplayOrientation(90);
-        mCamera.setParameters(p);
+        //p.setPictureFormat(PixelFormat.JPEG);
+        //p.set("flash-mode", "auto");
+//        mCamera.setDisplayOrientation(90);
+      //  mCamera.setParameters(p);
+         CameraExtraUtils.setCameraDisplayOrientation((Activity)mainContext, cameraId, mCamera);
 
         try {
             mCamera.setPreviewDisplay(holder);
@@ -77,13 +81,31 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             // ignore: tried to stop a non-existent preview
         }
 
-        // set preview size and make any resize, rotate or
-        // reformatting changes here
+      /*  try {
+            Camera.Parameters parameters = mCamera.getParameters();
+            if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+                parameters.set("orientation", "portrait");
+                mCamera.setDisplayOrientation(90);
+                parameters.setRotation(90);
+                mCamera.setPreviewDisplay(mHolder);
+                mCamera.startPreview();
+            }
+            else {
+                // This is an undocumented although widely known feature
+                parameters.set("orientation", "landscape");
+                // For Android 2.2 and above
+                mCamera.setDisplayOrientation(180);
+                // Uncomment for Android 2.0 and above
+                // parameters.setRotation(0);
+            }
+            mCamera.setPreviewDisplay(mHolder);
+            mCamera.startPreview();
 
-        //setCameraDisplayOrientation(this, 0, mCamera);
-
-        // start preview with new settings
+        } catch (IOException e) {
+            // left blank for now
+        }*/
         try {
+            CameraExtraUtils.setCameraDisplayOrientation((Activity)mainContext, cameraId, mCamera);
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
 

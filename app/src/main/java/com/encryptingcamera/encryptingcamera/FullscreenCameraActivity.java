@@ -59,6 +59,7 @@ public class FullscreenCameraActivity extends Activity {
     private Camera mCamera;
 
     private Camera.Parameters cameraParams;
+    private int cameraId = 0;
     private CameraPreview mPreview;
 
 
@@ -76,18 +77,14 @@ public class FullscreenCameraActivity extends Activity {
     /** A safe way to get an instance of the Camera object.
      * Gets the back-facing camera for now */
 
-    public Camera getCameraInstance() {
-
+    public Camera getCameraInstance(int id) {
        Camera c = null;
        try {
-                c = Camera.open();
-//                cameraParams = mCamera.getParameters();
-            } catch (RuntimeException e) {
+                c = Camera.open(id);
+       } catch (RuntimeException e) {
                 // Camera is not available (in use or does not exist)
-           Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG);
-                Log.e("Camera Error. Failed to Open. Error: ", e.getMessage());
-           return null;
-            }
+                changeToNoCameraScreen();
+       }
 
         return c; // returns null if camera is unavailable
     }
@@ -167,38 +164,14 @@ public class FullscreenCameraActivity extends Activity {
          * I guess we'll start here
          */
 
-
         if (checkCameraHardware(this)) {
-            mCamera = getCameraInstance();
-
-            if (mCamera != null) {
-                // TODO: Add code for checking features of the camera.
-
-
-                // Create our Preview view and set it as the content of our activity.
-                mPreview = new CameraPreview(this, mCamera);
-
-                FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-                preview.addView(mPreview);
-            }
-            else {
-
-                Intent changeActivitiesIntent = new Intent(this, SetupMainActivity.class);
-                // Start the activity
-                startActivity(changeActivitiesIntent);
-
-                // tell user to wait for the camera to be used
-                Toast.makeText(this, getString(R.string.cameraInUseText), Toast.LENGTH_LONG).show();
-            }
+            initializeCamera();
         }
         else {
-
-            Intent changeActivitiesIntent = new Intent(this, SetupMainActivity.class);
-            // Start the activity
-            startActivity(changeActivitiesIntent);
-
             // tell user there is no camera.
-            Toast.makeText(this, getString(R.string.noCameraLabelText), Toast.LENGTH_LONG).show();
+            changeToNoCameraScreen();
+
+            //Toast.makeText(this, getString(R.string.noCameraLabelText), Toast.LENGTH_LONG).show();
         }
 
 
@@ -208,30 +181,59 @@ public class FullscreenCameraActivity extends Activity {
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
     }
 
+    private void setDefaultCameraParameters() {
+      //  if (mCamera != null && mCa.)
+    }
 
-    public static void setCameraDisplayOrientation(Activity activity,
-                                                   int cameraId, android.hardware.Camera camera) {
-        android.hardware.Camera.CameraInfo info =
-                new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
-        int rotation = activity.getWindowManager().getDefaultDisplay()
-                .getRotation();
-        int degrees = 0;
-        switch (rotation) {
-            case Surface.ROTATION_0: degrees = 0; break;
-            case Surface.ROTATION_90: degrees = 90; break;
-            case Surface.ROTATION_180: degrees = 180; break;
-            case Surface.ROTATION_270: degrees = 270; break;
+
+    protected void initializeCamera() {
+        mCamera = getCameraInstance(cameraId);
+
+        if (mCamera != null) {
+            // TODO: Add code for checking features of the camera.
+            cameraParams = mCamera.getParameters();
+            //         cameraParams.
+
+
+            // Create our Preview view and set it as the content of our activity.
+            mPreview = new CameraPreview(this, mCamera, cameraId);
+
+            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+            preview.addView(mPreview);
+        }
+        else {
+            Intent changeActivitiesIntent = new Intent(this, SetupMainActivity.class);
+            // Start the activity
+            startActivity(changeActivitiesIntent);
+
+            // tell user to wait for the camera to be used
+            Toast.makeText(this, getString(R.string.cameraInUseText), Toast.LENGTH_LONG).show();
         }
 
-        int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360;  // compensate the mirror
-        } else {  // back-facing
-            result = (info.orientation - degrees + 360) % 360;
+
+        //Trigger capturing an image by calling the Camera.takePicture() method.
+   /*     captureButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // get an image from the camera
+                        mCamera.takePicture(null, null, mPicture);
+                    }
+                }
+        );*/
+    }
+
+
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        if (mCamera == null)
+        {
+            initializeCamera();
+            //mCamera = getCameraInstance(cameraId);
         }
-        camera.setDisplayOrientation(result);
     }
 
     @Override
@@ -240,11 +242,12 @@ public class FullscreenCameraActivity extends Activity {
 
         // on stop release the camera
         if (mCamera != null) {
+            mCamera.setPreviewCallback(null);
+            mPreview.getHolder().removeCallback(mPreview);
             mCamera.release();
             mCamera = null;
         }
     }
-
 
     @Override
     protected void onPause() {
@@ -252,6 +255,8 @@ public class FullscreenCameraActivity extends Activity {
 
         // on stop release the camera
         if (mCamera != null) {
+            mCamera.setPreviewCallback(null);
+            mPreview.getHolder().removeCallback(mPreview);
             mCamera.release();
             mCamera = null;
         }
@@ -299,5 +304,12 @@ public class FullscreenCameraActivity extends Activity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    private void changeToNoCameraScreen() {
+        Intent changeActivitiesIntent = new Intent(this, NoCameraActivity.class);
+
+        // Start the activity
+        startActivity(changeActivitiesIntent);
     }
 }
