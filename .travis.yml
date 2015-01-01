@@ -1,8 +1,4 @@
 language: android
-  android {
-      lintOptions {
-          abortOnError false
-      }
 android:
     components:
     # Uncomment the lines below if you want to
@@ -21,3 +17,8 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis-google-19
+
+     android {
+         lintOptions {
+             abortOnError false
+         }
