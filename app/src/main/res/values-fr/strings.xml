@@ -9,7 +9,7 @@
     <string name="dummy_button">Button Dummy</string>
     <string name="dummy_content">Content qui na pas de content</string>
     <string name="noCameraLabelText">Vous n\'avons pas un camera!</string>
-    <string name="cameraInUseText">L'appareil photo est utilisé, se il vous plaît patienter.</string>
+    <string name="cameraInUseText">L\'appareil photo est utilisé, se il vous plaît patienter.</string>
     <string name="title_activity_no_camera">PasDeCameraActivite</string>
 
 </resources>
