@@ -9,7 +9,7 @@
 <string name="dummy_button">Dummy Button</string>
 <string name="dummy_content">DUMMY\nCONTENT</string>
 <string name="noCameraLabelText">You have no camera!</string>
-<string name="cameraInUseText">The camera is being used, please wait</string>
+<string name="cameraInUseText">The camera is being used, please wait.</string>
 <string name="title_activity_no_camera">NoCameraActivity</string>
 
 </resources>
